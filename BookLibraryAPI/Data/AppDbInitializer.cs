@@ -20,7 +20,6 @@ namespace BookLibraryAPI.Data
                         DateRead = DateTime.Now.AddDays(-10),
                         Rate = 4,
                         Genre = "Manual",
-                        Author = "Jim Morrissssson",
                         Cover = "https://edit.org/images/cat/book-covers-big-2019101610.jpg",
                         DateAdded = DateTime.Now,
                     },
@@ -32,7 +31,6 @@ namespace BookLibraryAPI.Data
                         DateRead = DateTime.Now.AddDays(-20),
                         Rate = 5,
                         Genre = "Biography",
-                        Author = "Angel Danger",
                         Cover = "https://img.freepik.com/free-vector/abstract-elegant-winter-book-cover_23-2148798745.jpg?w=2000",
                         DateAdded = DateTime.Now,
                     },
@@ -42,7 +40,6 @@ namespace BookLibraryAPI.Data
                         Description = "Big words in small box",
                         IsRead = false,
                         Genre = "Drama",
-                        Author = "Peewie Longhorn",
                         Cover = "https://m.media-amazon.com/images/I/41gr3r3FSWL.jpg",
                         DateAdded = DateTime.Now,
                     }

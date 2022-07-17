@@ -5,13 +5,13 @@ namespace BookLibraryAPI.Interfaces
 {
     public interface IBooksService
     {
-        void AddBook(BookVM bookVM);
+        void AddBookWithAuthors(BookVM bookVM);
 
         void DeleteBookById(int bookId);
 
         List<Book> GetAllBooks();
 
-        Book? GetBookById(int bookId);
+        BookWithAuthorsVM? GetBookById(int bookId);
 
         Book? UpdateBookById(int bookId, BookVM bookVM);
     }

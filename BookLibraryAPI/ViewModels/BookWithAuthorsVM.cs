@@ -1,6 +1,6 @@
 ﻿namespace BookLibraryAPI.ViewModels
 {
-    public class BookVM
+    public class BookWithAuthorsVM
     {
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -9,7 +9,7 @@
         public int? Rate { get; set; }
         public string Genre { get; set; } = string.Empty;
         public string Cover { get; set; } = string.Empty;
-        public int PublisherId { get; set; }
-        public List<int> AuthorIds { get; set; } = null!;
+        public string PublisherName { get; set; } = string.Empty;
+        public List<string> AuthorNames { get; set; } = null!;
     }
 }

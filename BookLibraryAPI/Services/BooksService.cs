@@ -14,7 +14,7 @@ namespace BookLibraryAPI.Services
             _dbContext = dbContext;
         }
 
-        public void AddBook(BookVM bookVM)
+        public void AddBookWithAuthors(BookVM bookVM)
         {
             var book = new Book()
             {
@@ -24,18 +24,45 @@ namespace BookLibraryAPI.Services
                 DateRead = bookVM.DateRead,
                 Rate = bookVM.Rate,
                 Genre = bookVM.Genre,
-                Author = bookVM.Author,
                 Cover = bookVM.Cover,
-                DateAdded = DateTime.Now
+                DateAdded = DateTime.Now,
+                PublisherId = bookVM.PublisherId,
             };
 
             _dbContext.Add(book);
             _dbContext.SaveChanges();
+
+            foreach (var id in bookVM.AuthorIds)
+            {
+                var bookAuthor = new BookAuthor()
+                {
+                    BookId = book.Id,
+                    AuthorId = id
+                };
+                _dbContext.BooksAuthors.Add(bookAuthor);
+                _dbContext.SaveChanges();
+            }
         }
 
         public List<Book> GetAllBooks() => _dbContext.Books.ToList();
 
-        public Book? GetBookById(int bookId) => _dbContext.Books.FirstOrDefault(b => b.Id == bookId);
+        public BookWithAuthorsVM? GetBookById(int bookId)
+        {
+            var bookWithAuthors = _dbContext.Books.Where(b => b.Id == bookId).Select(bookVM => new BookWithAuthorsVM()
+            {
+                Title = bookVM.Title,
+                Description = bookVM.Description,
+                IsRead = bookVM.IsRead,
+                DateRead = bookVM.DateRead,
+                Rate = bookVM.Rate,
+                Genre = bookVM.Genre,
+                Cover = bookVM.Cover,
+                PublisherName = bookVM.Publisher.Name,
+                AuthorNames = bookVM.BookAuthors.Select(ba => ba.Author.FullName).ToList()
+            }).FirstOrDefault();
+
+            return bookWithAuthors;
+        }
 
         public Book? UpdateBookById(int bookId, BookVM bookVM)
         {
@@ -48,7 +75,6 @@ namespace BookLibraryAPI.Services
                 book.DateRead = bookVM.DateRead;
                 book.Rate = bookVM.Rate;
                 book.Genre = bookVM.Genre;
-                book.Author = bookVM.Author;
                 book.Cover = bookVM.Cover;
 
                 _dbContext.SaveChanges();
