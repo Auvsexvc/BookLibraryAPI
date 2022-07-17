@@ -17,9 +17,16 @@ namespace BookLibraryAPI.Controllers
         }
 
         [HttpGet("get-all")]
-        public IActionResult GetAll()
+        public IActionResult GetAll(string sortBy = "asc", string searchString = "null")
         {
-            return Ok(_publishersService.GetAll());
+            try
+            {
+                return Ok(_publishersService.GetAll(sortBy, searchString));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Publishers couldnt be loaded.");
+            }
         }
 
         [HttpPost("add-publisher")]

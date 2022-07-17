@@ -16,7 +16,29 @@ namespace BookLibraryAPI.Services
             _dbContext = dbContext;
         }
 
-        public List<Publisher> GetAll() => _dbContext.Publishers.ToList();
+        public List<Publisher> GetAll(string sortBy, string searchString)
+        {
+            var publishers = _dbContext.Publishers.ToList();
+            if (!string.IsNullOrEmpty(searchString) && searchString!="null")
+            {
+                publishers = publishers.Where(p => p.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(sortBy) )
+            {
+                switch (sortBy)
+                {
+                    case "desc":
+                        publishers = publishers.OrderByDescending(p => p.Name).ToList();
+                        break;
+                    default:
+                        publishers = publishers.OrderBy(p => p.Name).ToList();
+                        break;
+                }
+            }
+
+            return publishers;
+        }
 
         public Publisher AddPublisher(PublisherVM publisherVM)
         {
