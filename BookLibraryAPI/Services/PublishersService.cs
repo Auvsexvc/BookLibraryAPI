@@ -16,7 +16,7 @@ namespace BookLibraryAPI.Services
             _dbContext = dbContext;
         }
 
-        public List<Publisher> GetAll(string sortBy, string searchString, int pageNumber, int pageSize)
+        public List<Publisher> GetAll(string sortBy, string searchString, int? pageNumber, int? pageSize)
         {
             var publishers = _dbContext.Publishers.ToList();
             if (!string.IsNullOrEmpty(searchString) && searchString != "null")
@@ -33,7 +33,7 @@ namespace BookLibraryAPI.Services
                 };
             }
 
-            return PaginetedList<Publisher>.Create(publishers.AsQueryable(), pageNumber, pageSize);
+            return PaginetedList<Publisher>.Create(publishers.AsQueryable(), pageNumber ?? 1, pageSize ?? 5);
         }
 
         public Publisher AddPublisher(PublisherVM publisherVM)

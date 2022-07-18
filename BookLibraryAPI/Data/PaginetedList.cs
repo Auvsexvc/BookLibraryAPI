@@ -1,9 +1,9 @@
 ﻿namespace BookLibraryAPI.Data
 {
-    public class PaginetedList<T> : List<T>
+    public sealed class PaginetedList<T> : List<T>
     {
-        public int Pageindex { get; private set; }
-        public int TotalPages { get; private set; }
+        public int Pageindex { get; }
+        public int TotalPages { get; }
 
         public bool HasPreviousPage
         {
@@ -15,12 +15,12 @@
             get { return Pageindex < TotalPages; }
         }
 
-        public PaginetedList(List<T> items, int count, int pageIndex, int pageSize)
+        private PaginetedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             Pageindex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
 
-            this.AddRange(items);
+            AddRange(items);
         }
 
         public static PaginetedList<T> Create(IQueryable<T> source, int pageIndex, int pageSize)

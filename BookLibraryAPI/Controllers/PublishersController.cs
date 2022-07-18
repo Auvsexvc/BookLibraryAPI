@@ -23,7 +23,7 @@ namespace BookLibraryAPI.Controllers
         {
             try
             {
-                _logger.LogInformation($"Custom msg: {HttpContext.Request.Path}, {sortBy}, {searchString}, {pageNumber}, {pageSize}");
+                //_logger.LogInformation($"Custom msg: {HttpContext.Request.Path}, {sortBy}, {searchString}, {pageNumber}, {pageSize}");
                 return Ok(_publishersService.GetAll(sortBy, searchString, pageNumber, pageSize));
             }
             catch (Exception)

@@ -1,21 +1,23 @@
+﻿using BookLibraryAPI.Controllers;
 using BookLibraryAPI.Data;
-using BookLibraryAPI.Exceptions;
 using BookLibraryAPI.Interfaces;
 using BookLibraryAPI.Models;
 using BookLibraryAPI.Services;
-using BookLibraryAPI.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookLibraryTests
 {
-    public class PublishersServiceTest
+    internal class PublishersControllerTest
     {
         private static readonly DbContextOptions<AppDbContext> _dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(databaseName: "BookLibraryDbTest")
             .Options;
 
         private AppDbContext _dbContext;
-        private IPublishersService _service;
+        private IPublishersService _publishersService;
+        private PublishersController _controller;
 
         [OneTimeSetUp]
         public void Setup()
@@ -25,113 +27,30 @@ namespace BookLibraryTests
 
             SeedDatabase();
 
-            _service = new PublishersService(_dbContext);
+            _publishersService = new PublishersService(_dbContext);
+            _controller = new PublishersController(_publishersService, new NullLogger<PublishersController>());
         }
 
-        [Test, Order(1)]
-        public void GetAllPublishersNoSortByNoSearchStringNoPageNumberNoPageSize()
+        [Test]
+        public void GetAllPublishersNoSortByNoSearchStringNoPageNumberNoPageSizeReturnOkTest()
         {
-            List<Publisher>? result = _service.GetAll("", "", null, null);
+            IActionResult actionResult = _controller.GetAll();
+            Assert.That(actionResult, Is.TypeOf<OkObjectResult>());
+            List<Publisher>? actionResultData = (actionResult as OkObjectResult)?.Value as List<Publisher>;
 
-            Assert.That(result, Has.Count.EqualTo(5));
+            Assert.That(actionResultData, Has.Count.EqualTo(5));
+            Assert.That(actionResultData.LastOrDefault()!.Id, Is.EqualTo(5));
         }
 
-        [Test, Order(2)]
-        public void GetAllPublishersNoSortByNoSearchStringNoPageNumber()
+        [Test]
+        public void GetAllPublishersReturnOkTest()
         {
-            List<Publisher>? result = _service.GetAll("", "", null, 6);
+            IActionResult actionResult = _controller.GetAll("desc", "publisher", 2, 4);
+            Assert.That(actionResult, Is.TypeOf<OkObjectResult>());
 
-            Assert.That(result, Has.Count.EqualTo(6));
-        }
-
-        [Test, Order(3)]
-        public void GetAllPublishersNoSortByNoSearchStringNoPageSize()
-        {
-            List<Publisher> result = _service.GetAll("", "", 2, null);
-
-            Assert.That(result, Has.Count.EqualTo(1));
-        }
-
-        [Test, Order(4)]
-        public void GetAllPublishersNoSortByNoSearchStringNoPageSizePage3()
-        {
-            List<Publisher>? result = _service.GetAll("", "", 3, null);
-
-            Assert.That(result, Is.Empty);
-        }
-
-        [Test, Order(5)]
-        public void GetAllPublishersNoSortByNoPageNumberNoPageSize()
-        {
-            List<Publisher>? result = _service.GetAll("", "3", null, null);
-
-            Assert.That(result, Has.Count.EqualTo(1));
-            Assert.That(result.FirstOrDefault()!.Name, Is.EqualTo("Publisher 3"));
-        }
-
-        [Test, Order(6)]
-        public void GetAllPublishersNoSearchStringNoPageNumberNoPageSize()
-        {
-            var result = _service.GetAll("desc", "", null, null);
-
-            Assert.That(result, Has.Count.EqualTo(5));
-            Assert.That(result.FirstOrDefault()!.Name, Is.EqualTo("Publisher 6"));
-        }
-
-        [Test, Order(7)]
-        public void GetPublisherById()
-        {
-            for (int i = 1; i <= _service.GetAll("", "", null, 6).Count; i++)
-            {
-                Assert.Multiple(() =>
-                {
-                    Assert.That(_service.GetPublisherById(i)!.Id, Is.EqualTo(i));
-                    Assert.That(_service.GetPublisherById(i)!.Name, Is.EqualTo($"Publisher {i}"));
-                });
-            }
-        }
-
-        [Test, Order(8)]
-        public void GetPublisherByIdNull()
-        {
-            Assert.That(_service.GetPublisherById(99), Is.Null);
-        }
-
-        [Test, Order(98)]
-        public void AddPublisherWithException()
-        {
-            var publisher = new PublisherVM()
-            {
-                Name = "123 With Exception"
-            };
-
-            Assert.That(() => _service.AddPublisher(publisher), Throws.TypeOf<PublisherNameException>().With.Message.EqualTo("Publisher is not allowed to start with number"));
-        }
-
-        [Test, Order(99)]
-        public void AddPublisherWithExceptionNoException()
-        {
-            var publisher = new PublisherVM()
-            {
-                Name = "No Exception"
-            };
-
-            var result = _service.AddPublisher(publisher);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Name, Does.StartWith("No"));
-        }
-
-        [Test, Order(9)]
-        public void GetPublisherDataTest()
-        {
-            PublisherWithBooksAndAuthorsVM? result = _service.GetPublisherData(1);
-            Assert.Multiple(() =>
-            {
-                Assert.That(result!.Name, Is.EqualTo("Publisher 1"));
-                Assert.That(result.BookAuthors, Is.Not.Empty);
-                Assert.That(result.BookAuthors.OrderBy(ba => ba.BookName).FirstOrDefault()!.BookName, Is.EqualTo("Book 1 Title"));
-            });
+            List<Publisher>? actionResultData = (actionResult as OkObjectResult)?.Value as List<Publisher>;
+            Assert.That(actionResultData, Has.Count.EqualTo(2));
+            Assert.That(actionResultData.LastOrDefault()!.Name, Is.EqualTo("Publisher 1"));
         }
 
         [OneTimeTearDown]
