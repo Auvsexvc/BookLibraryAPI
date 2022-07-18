@@ -17,11 +17,11 @@ namespace BookLibraryAPI.Controllers
         }
 
         [HttpGet("get-all")]
-        public IActionResult GetAll(string sortBy = "asc", string searchString = "null")
+        public IActionResult GetAll(string sortBy = "asc", string searchString = "null", int pageNumber = 1, int pageSize = 5)
         {
             try
             {
-                return Ok(_publishersService.GetAll(sortBy, searchString));
+                return Ok(_publishersService.GetAll(sortBy, searchString, pageNumber, pageSize));
             }
             catch (Exception)
             {

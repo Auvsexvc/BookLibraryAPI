@@ -13,6 +13,6 @@ namespace BookLibraryAPI.Interfaces
 
         void DeletePublisherById(int id);
 
-        List<Publisher> GetAll(string sortBy, string searchString);
+        List<Publisher> GetAll(string sortBy, string searchString, int pageNumber, int pageSize);
     }
 }
