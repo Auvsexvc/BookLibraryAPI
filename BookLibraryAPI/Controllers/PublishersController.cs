@@ -10,10 +10,12 @@ namespace BookLibraryAPI.Controllers
     public class PublishersController : ControllerBase
     {
         private readonly IPublishersService _publishersService;
+        private readonly ILogger<PublishersController> _logger;
 
-        public PublishersController(IPublishersService publishersService)
+        public PublishersController(IPublishersService publishersService, ILogger<PublishersController> logger)
         {
             _publishersService = publishersService;
+            _logger = logger;
         }
 
         [HttpGet("get-all")]
@@ -21,6 +23,7 @@ namespace BookLibraryAPI.Controllers
         {
             try
             {
+                _logger.LogInformation($"Custom msg: {HttpContext.Request.Path}, {sortBy}, {searchString}, {pageNumber}, {pageSize}");
                 return Ok(_publishersService.GetAll(sortBy, searchString, pageNumber, pageSize));
             }
             catch (Exception)
