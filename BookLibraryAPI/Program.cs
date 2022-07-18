@@ -4,6 +4,7 @@ using BookLibraryAPI.Interfaces;
 using BookLibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,11 +23,12 @@ builder.Services.AddApiVersioning(setup=>
     setup.DefaultApiVersion = new ApiVersion(1, 0);
     setup.AssumeDefaultVersionWhenUnspecified = true;
     setup.ReportApiVersions = true;
+    setup.ApiVersionReader = new HeaderApiVersionReader("custom-version-header");
 });
 builder.Services.AddVersionedApiExplorer(setup =>
 {
     setup.GroupNameFormat = "'v'VVV";
-    setup.SubstituteApiVersionInUrl = false;
+    setup.SubstituteApiVersionInUrl = true;
 });
 
 builder.Services.AddSwaggerGen();
