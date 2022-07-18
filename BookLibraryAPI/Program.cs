@@ -26,7 +26,7 @@ builder.Services.AddApiVersioning(setup=>
 builder.Services.AddVersionedApiExplorer(setup =>
 {
     setup.GroupNameFormat = "'v'VVV";
-    setup.SubstituteApiVersionInUrl = true;
+    setup.SubstituteApiVersionInUrl = false;
 });
 
 builder.Services.AddSwaggerGen();
