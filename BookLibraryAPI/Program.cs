@@ -2,6 +2,8 @@ using BookLibraryAPI.Data;
 using BookLibraryAPI.Exceptions;
 using BookLibraryAPI.Interfaces;
 using BookLibraryAPI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,18 @@ builder.Services.AddTransient<IAuthorsService, AuthorsService>();
 builder.Services.AddTransient<IPublishersService, PublishersService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddApiVersioning(setup=>
+{
+    setup.DefaultApiVersion = new ApiVersion(1, 0);
+    setup.AssumeDefaultVersionWhenUnspecified = true;
+    setup.ReportApiVersions = true;
+});
+builder.Services.AddVersionedApiExplorer(setup =>
+{
+    setup.GroupNameFormat = "'v'VVV";
+    setup.SubstituteApiVersionInUrl = true;
+});
+
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
