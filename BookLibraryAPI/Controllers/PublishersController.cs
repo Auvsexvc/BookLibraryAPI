@@ -21,9 +21,9 @@ namespace BookLibraryAPI.Controllers
         [HttpGet("get-all")]
         public IActionResult GetAll(string sortBy = "asc", string searchString = "null", int pageNumber = 1, int pageSize = 5)
         {
+            _logger.LogInformation($"Custom msg: {HttpContext?.Request.Path}, {sortBy}, {searchString}, {pageNumber}, {pageSize}");
             try
             {
-                //_logger.LogInformation($"Custom msg: {HttpContext.Request.Path}, {sortBy}, {searchString}, {pageNumber}, {pageSize}");
                 return Ok(_publishersService.GetAll(sortBy, searchString, pageNumber, pageSize));
             }
             catch (Exception)
